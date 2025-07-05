@@ -5,9 +5,6 @@ from dotenv import load_dotenv
 import os
 import csv
 
-
-
-
 def exception_handler(func):
     """
     a decorator that handles exceptions for SQL-Python connector methods

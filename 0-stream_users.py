@@ -1,31 +1,22 @@
+from seed import exception_handler, connect_to_prodev
 
-from seed2 import connect_db
-
+@exception_handler
 def stream_users():
-    connection = connect_db()
-    cursor = connection.cursor()
-
-    select_database = """
-                USE alx_prodev;
-                """
-
-    query = """
-            SELECT * FROM user_data;
-            """
-    
-    cursor.execute(select_database)
-    cursor.execute(query)
-
-    result = cursor.fetchall()
-    for row in result:
-        output = {
-            'user_id':row[0],
-            'name':row[1],
-            'email':row[2],
-            'age':row[3]
-        }
-        yield output
-    
-    cursor.close()
-    connection.close()
-    
+    """
+    Generator to stream user_data rows one by one.
+    Handles unread results if the generator is closed early.
+    """
+    connection = connect_to_prodev()
+    cursor = connection.cursor(dictionary=True)
+    try:
+        cursor.execute("SELECT * FROM user_data;")
+        for row in cursor:
+            yield row
+    except GeneratorExit:
+        # Clean unread results before generator is finalized
+        if cursor.with_rows:
+            _ = cursor.fetchall()
+        raise  
+    finally:
+        cursor.close()
+        connection.close()

@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-seed = __import__('seed2')
+seed = __import__('seed')
 
 connection = seed.connect_db()
 if connection:
@@ -12,7 +12,7 @@ if connection:
 
     if connection:
         seed.create_table(connection)
-        seed.insert_data(connection, 'user_data.csv')
+        seed.insert_data(connection, 'users_data.csv')
         cursor = connection.cursor()
         cursor.execute(f"SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'ALX_prodev';")
         result = cursor.fetchone()

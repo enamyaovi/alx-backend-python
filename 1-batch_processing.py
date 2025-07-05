@@ -1,44 +1,46 @@
-from seed2 import connect_db
+from seed import connect_to_prodev
+from itertools import islice
 
+def stream_users_in_batches(batch_size: int):
+    """
+    Generator function that streams user records from the database
+    in batches of the specified size. Yields each user row as a dictionary.
 
-def stream_users_in_batches(batch_size:int):
+    Args:
+        batch_size (int): The number of rows to retrieve in a single batch.
 
+    Yields:
+        dict: A single user record from the batch.
+    """
     if not isinstance(batch_size, int):
         raise ValueError(f"Sorry but '{batch_size}' is not a valid integer")
-    else:
-        row_limit = batch_size
 
-    select_database = """
-            USE alx_prodev;
-            """
+    connection = connect_to_prodev()
+    stream_cursor = connection.cursor(dictionary=True)
 
-    query = f"""
-        SELECT * FROM user_data 
-        LIMIT {row_limit};   
-        """
-    
-    with connect_db() as connection:
-    # connection = connect_db()
-        cursor = connection.cursor()
-        cursor.execute(select_database)
-        cursor.execute(query)
-        results = cursor.fetchall()
-        for row in results:
-            output = {
-            'user_id':row[0],
-            'name':row[1],
-            'email':row[2],
-            'age':row[3]
-        }
-            yield output
+    try:
+        stream_cursor.execute("SELECT * FROM user_data;")
+        result = stream_cursor.fetchmany(size=batch_size)
+        for row in result:
+            yield row
+    except GeneratorExit:
+        if stream_cursor.with_rows:
+            _ = stream_cursor.fetchall()
+        raise
+    finally:
+        stream_cursor.close()
+        connection.close()
 
-def batch_processing(batch_size:int):
-    value = batch_size
-    gencomp = stream_users_in_batches(batch_size=value)
-    batch_result = [row for row in gencomp]
 
-    for value in batch_result:
-        if value['age'] > 25:
-            print(value)
-        
-    
+def batch_processing(batch_size: int):
+    """
+    Consumer function that processes a batch of user data streamed from
+    the database. Filters and prints only users over the age of 25.
+
+    Args:
+        batch_size (int): The number of user records to retrieve and evaluate.
+    """
+    batch_data = stream_users_in_batches(batch_size)
+    for user in islice(batch_data, batch_size):
+        if user['age'] > 25:
+            print(user)
