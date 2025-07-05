@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-seed = __import__('seed2')
+seed = __import__('seed')
 
 
 def paginate_users(page_size, offset):
@@ -14,15 +14,16 @@ def paginate_users(page_size, offset):
 def lazy_paginate(pagesize):
 
     pages = pagesize
-    current_page = []
 
     data = paginate_users(page_size=pages, offset= 0)
 
-    for item in data:
-        current_page.append(item)
-        if len(current_page) == pagesize:
-            yield current_page
-            current_page = []
-    if current_page:
-        yield current_page
+    if data[-1] is not None:
+        yield data
+        while True:
+            offset += 1
+            next_page = paginate_users(page_size=pages, offset=offset)
+            if next_page[-1] is not None:
+                yield next_page
+            else:
+                break
     
