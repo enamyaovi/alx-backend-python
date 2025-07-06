@@ -71,7 +71,7 @@ def create_database(connection=None):
     """
     with connection.cursor() as create_cursor:
         create_cursor.execute(sql_operation)
-        create_cursor.commit()
+        connection.commit()
         while create_cursor.nextset():
             result_set = create_cursor.fetchall()
             for row in result_set:
@@ -121,7 +121,7 @@ def create_table(connection=None):
     """
     with connection.cursor() as insert_cursor:
         insert_cursor.execute(query)
-        insert_cursor.commit()
+        connection.commit()
         while insert_cursor.nextset():
             results = insert_cursor.fetchall()
             for row in results:
