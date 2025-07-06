@@ -43,4 +43,4 @@ def batch_processing(batch_size: int):
     batch_data = stream_users_in_batches(batch_size)
     for user in islice(batch_data, batch_size):
         if user['age'] > 25:
-            print(user)
+            return print(user)
