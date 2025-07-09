@@ -1,0 +1,9 @@
+Checking In
+Checking In
+Checking In
+Checking In
+ERROR - {TypeError('tuple indices must be integers or slices, not str')}
+Traceback (most recent call last):
+  File "<stdin>", line 10, in wrapper
+TypeError: tuple indices must be integers or slices, not str
+2025-07-08 23:30:14,702 - INFO: {'SELECT * FROM users'}
