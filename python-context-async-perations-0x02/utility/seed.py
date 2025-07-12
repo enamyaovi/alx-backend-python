@@ -37,7 +37,7 @@ def get_config_parameters(file=None):
         *updated to include the db name to be connected to
     """
     if file is None:
-        file = 'secrets.env'
+        file = 'db_secrets.env'
 
     load_dotenv(file)
     keys = ['username', 'host', 'password','database']

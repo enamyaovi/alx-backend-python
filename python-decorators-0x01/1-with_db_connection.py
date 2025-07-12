@@ -1,52 +1,37 @@
-import sqlite3 
-import functools, inspect
+import inspect
+import functools
+import logging
 
-def with_db_connection(func):
-    """ your code goes here""" 
+# Set up logger
+query_logger = logging.getLogger(__name__)
+file_handler = logging.FileHandler(filename='app.log', mode='a', encoding="utf-8")
+formatter = logging.Formatter(style="{", fmt="{asctime} - {levelname}: {msg}")
+file_handler.setFormatter(formatter)
+query_logger.addHandler(file_handler)
+query_logger.setLevel("INFO")
+file_handler.setLevel("INFO")
+
+# Decorator to log SQL queries passed to a function
+def log_queries(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-
-        conn = sqlite3.connect('users.db')
-
-        #inspect the signature of the function and retrieve the args passed
         sig = inspect.signature(func)
-        bound = sig.bind_partial(*args, **kwargs)
+        bound = sig.bind(*args, **kwargs)
         bound.apply_defaults()
 
         try:
-            #loop through the arguments then check for connection parameter
-            
-            #type check the parameter to enforce they are the right type
-            #don't even need this in the assignment line 20-28
             for name, value in bound.arguments.items():
-                if name == 'conn':
-                    if not isinstance(value, sqlite3.Connection):
-                        raise TypeError
-                    else:
-                        return func(*args, **kwargs)
-                if name == 'user_id':
-                    if not isinstance(value,int):
-                        raise TypeError
+                if name == 'query':
+                    query_logger.info(f"Query: {value}")
+        except Exception as err:
+            query_logger.exception(f"Error: {err}")
 
-            #if no such parameter is provided create a connection ourselves
-            if not 'conn' in bound.arguments.items():
-                return func(conn, *args, **kwargs)
-            
-        #if cnx then connect to database using that connection
-        except Exception:
-            print("Error")
-        else:
-            print("function call")
-            # return func(conn, *args, **kwargs)
+        return func(*args, **kwargs)
     return wrapper
-        
 
-@with_db_connection 
-def get_user_by_id(conn, user_id): 
-    cursor = conn.cursor() 
-    cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,)) 
-    return cursor.fetchone() 
+@log_queries
+def fetch_all_users(query):
+    print('Perform Database Operations')
 
-#### Fetch user by ID with automatic connection handling 
-# user = get_user_by_id(user_id=1)
-# print(user)
+# Example call
+users = fetch_all_users(query="SELECT * FROM users")
