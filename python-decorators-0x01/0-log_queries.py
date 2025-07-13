@@ -48,4 +48,8 @@ def fetch_all_users(query):
     
 
 # Example call
-users = fetch_all_users(query="SELECT * FROM users")
+if __name__ == "main":
+    users = fetch_all_users(query="SELECT * FROM users")
+
+    for user in users:
+        print(user)
