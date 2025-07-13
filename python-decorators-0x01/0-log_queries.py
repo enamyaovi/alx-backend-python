@@ -1,6 +1,15 @@
 import inspect
 import functools
 import logging
+from datetime import datetime
+import mysql
+import mysql.connector
+
+config = {
+    'username':'myuser',
+    'host':'localhost',
+    'password':'secret'
+}
 
 # Set up logger
 query_logger = logging.getLogger(__name__)
@@ -31,7 +40,12 @@ def log_queries(func):
 
 @log_queries
 def fetch_all_users(query):
-    print('Perform Database Operations')
+    with mysql.connector.connect(**config) as cnx:
+        cur = cnx.cursor()
+        cur.execute(query)
+        rows = cur.fetchall()
+        return rows
+    
 
 # Example call
 users = fetch_all_users(query="SELECT * FROM users")
