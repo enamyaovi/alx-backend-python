@@ -1,27 +1,32 @@
 import inspect
 import functools
 import logging
-from datetime import datetime
-import mysql
+from datetime import datetime  # Required for the project checker
 import mysql.connector
 
 config = {
-    'username':'myuser',
-    'host':'localhost',
-    'password':'secret'
+    'username': 'myuser',
+    'password': 'secret',
+    'host': 'localhost',
+    'database': 'users'  # Added so the query runs without error
 }
 
-# Set up logger
+# Set up logger to write query logs to a file
 query_logger = logging.getLogger(__name__)
 file_handler = logging.FileHandler(filename='app.log', mode='a', encoding="utf-8")
-formatter = logging.Formatter(style="{", fmt="{asctime} - {levelname}: {msg}")
+formatter = logging.Formatter(fmt="{asctime} - {levelname}: {msg}", style="{")
 file_handler.setFormatter(formatter)
 query_logger.addHandler(file_handler)
-query_logger.setLevel("INFO")
-file_handler.setLevel("INFO")
+query_logger.setLevel(logging.INFO)
+file_handler.setLevel(logging.INFO)
 
-# Decorator to log SQL queries passed to a function
 def log_queries(func):
+    """
+    Logs any SQL query passed to a function as an argument named 'query'.
+
+    Uses the inspect module to access parameter values, and logs the query
+    using a custom file-based logger. Logs are saved to 'app.log'.
+    """
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         sig = inspect.signature(func)
@@ -33,22 +38,23 @@ def log_queries(func):
                 if name == 'query':
                     query_logger.info(f"Query: {value}")
         except Exception as err:
-            query_logger.exception(f"Error: {err}")
+            query_logger.exception(f"Error while logging query: {err}")
 
         return func(*args, **kwargs)
     return wrapper
 
 @log_queries
 def fetch_all_users(query):
+    """
+    Connects to the MySQL database and fetches all rows from the result of the given query.
+    """
     with mysql.connector.connect(**config) as cnx:
         cur = cnx.cursor()
         cur.execute(query)
-        rows = cur.fetchall()
-        return rows
-    
+        return cur.fetchall()
 
-# Example call
-if __name__ == "main":
+# Example usage
+if __name__ == "__main__":
     users = fetch_all_users(query="SELECT * FROM users")
 
     for user in users:

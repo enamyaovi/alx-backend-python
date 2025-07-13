@@ -9,7 +9,7 @@ Author: Cephas Tay
 import mysql
 import mysql.connector
 from typing import Optional, Any
-from utility import seed
+from utils import seed
 
 # pull configuration from env file for use throughout
 get_config: dict = seed.get_config_parameters('db_secrets.env')

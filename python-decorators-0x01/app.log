@@ -11,3 +11,14 @@ TypeError: tuple indices must be integers or slices, not str
 2025-07-09 19:58:44,463 - INFO: Query: Show tables;
 2025-07-09 19:59:36,388 - INFO: Query: SELECT * FROM users
 2025-07-09 19:59:39,127 - INFO: Query: Show tables;
+2025-07-13 13:10:38,251 - ERROR: Transaction rolled back due to: near "SEaT": syntax error
+2025-07-13 13:16:03,447 - ERROR: Initial call failed with sqlite3 error: no such table: user1s
+2025-07-13 13:16:04,449 - ERROR: Retry 1 failed: no such table: user1s
+2025-07-13 13:16:05,450 - ERROR: Retry 2 failed: no such table: user1s
+2025-07-13 13:16:06,451 - ERROR: Retry 3 failed: no such table: user1s
+2025-07-13 13:16:06,452 - CRITICAL: All 3 retry attempts failed for fetch_users_with_retry
+2025-07-13 13:22:03,280 - ERROR: Initial call failed with sqlite3 error: no such table: user1s
+2025-07-13 13:22:04,281 - ERROR: Retry 1 failed: no such table: user1s
+2025-07-13 13:22:05,282 - ERROR: Retry 2 failed: no such table: user1s
+2025-07-13 13:22:06,283 - ERROR: Retry 3 failed: no such table: user1s
+2025-07-13 13:22:06,284 - CRITICAL: All 3 retry attempts failed for fetch_users_with_retry
