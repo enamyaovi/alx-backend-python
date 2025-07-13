@@ -5,8 +5,10 @@ import inspect
 
 # Import connection decorator and error logger
 with_db_connection_module = __import__('1-with_db_connection')
+log_queries_module = __import__('0-log_queries')
 with_db_connection = with_db_connection_module.with_db_connection
 error_logger = with_db_connection_module.error_logger
+logger = log_queries_module.query_logger
 
 # Global dictionary to cache query results
 query_cache = {}
@@ -46,7 +48,7 @@ def cache_query(func, counter_dict={}):
 
         # If it's a new query, evaluate and cache it
         if counter_dict['last_query'] != current_query:
-            error_logger.info(f"New query detected: {current_query}")
+            logger.info(f"New query detected: {current_query}")
             counter_dict['last_query'] = current_query
             try:
                 if current_query in query_cache:
@@ -60,7 +62,7 @@ def cache_query(func, counter_dict={}):
                 error_logger.error(f"Query execution failed: {e}")
         else:
             # If it's a repeated query, return cached result
-            error_logger.info(f"Old query: returning cached result for query: {current_query}")
+            logger.info(f"Old query: returning cached result for query: {current_query}")
             return query_cache.get(current_query)
 
     return wrapper
