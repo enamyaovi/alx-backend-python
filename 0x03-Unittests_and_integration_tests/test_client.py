@@ -1,4 +1,3 @@
-
 #!/bin/usr/env python3
 
 import unittest
@@ -79,7 +78,6 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         cls.get_patcher = patch("requests.get")
         cls.mock_requests = cls.get_patcher.start()
         cls.mock_requests.side_effect = cls.mock_reponse
-        pass
     
 
     @classmethod
