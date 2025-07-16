@@ -73,5 +73,5 @@ def memoize(fn: Callable) -> Callable:
             setattr(self, attr_name, fn(self))
         return getattr(self, attr_name)
 
-    return property(memoized)
+    return property(memoized) # type: ignore
 
