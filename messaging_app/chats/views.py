@@ -12,7 +12,7 @@ from chats.serializers import (
 # Create your views here.
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = RegisterUserSerializer
-    queryset = get_user_model().objects.all().filter('is_active')
+    queryset = get_user_model().objects.all()
 
     def get_serializer_class(self, *args, **kwargs): #type:ignore
         if self.action == 'list':

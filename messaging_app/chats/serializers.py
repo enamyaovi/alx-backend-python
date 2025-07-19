@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from chats.models import Conversation, Message
+from .models import Conversation, Message
 from rest_framework.authtoken.models import Token
 
 from django.contrib.auth import get_user_model, authenticate
@@ -52,7 +52,7 @@ class LoginUserSerializer(serializers.Serializer):
             'A user with this email and password was not found.')
 
 class MessagesSerializer(serializers.ModelSerializer):
-    sender = UserSerializer(read_only=True)
+    sender = serializers.SerializerMethodField(method_name='get_sender')
     class Meta:
         model = Message
         fields = [
@@ -61,10 +61,12 @@ class MessagesSerializer(serializers.ModelSerializer):
             'sent_at'
         ]
 
+    def get_sender(self, obj):
+        return obj.sender.email
+
 
 class ConversationSerializer(serializers.ModelSerializer):
-    participants = UserSerializer(
-        many=True, read_only=True, source = 'participants.email')
+    participants = UserSerializer(many=True, read_only=True)
     messages = MessagesSerializer(many=True, read_only=True)
     class Meta:
         model = Conversation
