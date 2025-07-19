@@ -21,7 +21,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
     serializer_class = ConversationSerializer
     queryset = Conversation.objects.prefetch_related('messages').all()
 
-class MessagesViewSet(viewsets.ModelViewSet):
+class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessagesSerializer
     queryset = Message.objects.prefetch_related('sender').all()
 

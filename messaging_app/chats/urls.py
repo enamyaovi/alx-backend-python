@@ -1,12 +1,12 @@
 from rest_framework.routers import DefaultRouter
 from django.urls import path, include
-import chats.views as views
+from chats.views import MessageViewSet, ConversationViewSet, get_token
 
 NestedDefaultRouter = DefaultRouter()
-NestedDefaultRouter.register(r'messages', views.MessagesViewSet, basename='messages')
-NestedDefaultRouter.register(r'conversations', views.ConversationViewSet, basename='conversations')
+NestedDefaultRouter.register(r'messages', MessageViewSet, basename='messages')
+NestedDefaultRouter.register(r'conversations', ConversationViewSet, basename='conversations')
 
 urlpatterns = [
     path('', include(NestedDefaultRouter.urls)),
-    path('get_token/', views.get_token, name='get-token')
+    path('get_token/', get_token, name='get-token')
 ]
