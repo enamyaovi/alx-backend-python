@@ -52,7 +52,7 @@ class LoginUserSerializer(serializers.Serializer):
             'A user with this email and password was not found.')
 
 class MessagesSerializer(serializers.ModelSerializer):
-    sender = serializers.SerializerMethodField(method_name='get_sender')
+    sender = serializers.SerializerMethodField()
     class Meta:
         model = Message
         fields = [
