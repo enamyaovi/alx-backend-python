@@ -1,8 +1,8 @@
-from rest_framework.routers import DefaultRouter
+from rest_framework import routers
 from django.urls import path, include
 from chats.views import MessageViewSet, ConversationViewSet, get_token
 
-NestedDefaultRouter = DefaultRouter()
+NestedDefaultRouter = routers.DefaultRouter()
 NestedDefaultRouter.register(r'messages', MessageViewSet, basename='messages')
 NestedDefaultRouter.register(r'conversations', ConversationViewSet, basename='conversations')
 
