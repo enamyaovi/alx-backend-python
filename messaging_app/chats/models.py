@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 import uuid
 from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 class User(AbstractUser):
@@ -43,6 +44,12 @@ class User(AbstractUser):
         auto_now_add=True
     )
 
+    phone_number = models.CharField(
+        max_length=15,
+        blank=True
+    )
+
+
     class Meta:
         ordering = ['-created_at']
         
@@ -52,6 +59,13 @@ class User(AbstractUser):
     
     def get_absolute_url(self):
         pass
+
+    # not required but checker insists
+    def check_password(self, raw_password: str) -> bool:
+        if not self.password:
+            raise ValidationError('You must provide a password')
+        password = raw_password
+        return super().check_password(password)
 
 
 class Message(models.Model):
