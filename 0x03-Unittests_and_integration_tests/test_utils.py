@@ -22,7 +22,6 @@ class TestAccessNestedMap(unittest.TestCase):
     ])
     def test_access_nested_map(
         self,
-        name: str,
         nested_map: Dict,
         path: List[str],
         result: Any
@@ -39,7 +38,6 @@ class TestAccessNestedMap(unittest.TestCase):
     ])
     def test_access_nested_map_exception(
         self,
-        name: str,
         nested_map: Dict,
         path: List[str]
     ) -> None:
@@ -59,7 +57,6 @@ class TestGetJson(unittest.TestCase):
     ])
     def test_get_json(
         self,
-        name: str,
         url: str,
         response_data: Dict[str, Any]
     ) -> None:
