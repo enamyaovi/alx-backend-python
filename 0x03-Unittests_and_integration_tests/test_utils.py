@@ -16,9 +16,9 @@ class TestAccessNestedMap(unittest.TestCase):
     """Tests for access_nested_map utility function in utils."""
 
     @parameterized.expand([
-        ("a-level", {"a": 1}, ["a"], 1),
-        ("one-nested", {"a": {"b": 2}}, ["a"], {"b": 2}),
-        ("two-nested", {"a": {"b": 2}}, ["a", "b"], 2),
+        ({"a": 1}, ["a"], 1),
+        ({"a": {"b": 2}}, ["a"], {"b": 2}),
+        ({"a": {"b": 2}}, ["a", "b"], 2),
     ])
     def test_access_nested_map(
         self,
@@ -34,8 +34,8 @@ class TestAccessNestedMap(unittest.TestCase):
         self.assertEqual(utils.access_nested_map(nested_map, path), result)
 
     @parameterized.expand([
-        ("empty-dict", {}, ("a",)),
-        ("missing-nested", {"a": 1}, ("a", "b")),
+        ({}, ("a",)),
+        ({"a": 1}, ("a", "b")),
     ])
     def test_access_nested_map_exception(
         self,
