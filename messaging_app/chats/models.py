@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 import uuid
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
+from django.urls import reverse
 
 # Create your models here.
 class User(AbstractUser):
@@ -117,7 +118,6 @@ class Conversation(models.Model):
 
     participants = models.ManyToManyField(
         to=User,
-        # on_delete=models.DO_NOTHING,
         related_name='conversations'
     )
 
@@ -125,5 +125,14 @@ class Conversation(models.Model):
         auto_now_add=True
     )
 
+    @property
+    def get_participants_names(self):
+        participants_list = self.participants.all()
+        return [x.username for x in participants_list]
 
+    def __str__(self) -> str:
+        return f"{self.conversation_id}, {self.created_at}. participants: {self.get_participants_names}"
+    
+    def get_absolute_url(self):
+        return reverse('conversations-detail', kwargs={'pk':self.conversation_id})
 
