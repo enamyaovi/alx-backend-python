@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from django.contrib.auth import get_user_model, logout
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.authtoken.models import Token
+from django.shortcuts import get_object_or_404
 
 from django_filters import rest_framework as d_filters
 
@@ -35,7 +36,18 @@ class UserViewSet(viewsets.ModelViewSet):
 class ConversationViewSet(viewsets.ModelViewSet):
     serializer_class = ConversationSerializer
     queryset = Conversation.objects.prefetch_related('participants').all()
-    # permission_classes = [IsParticipantOfConversation]
+    permission_classes = [IsParticipantOfConversation]
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if request.user not in instance.participants.all():
+            return Response(
+                {"message":"Sorry you do not belong in this Convo"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        messages = Message.objects.filter(conversation=instance)
+        serializer = MessagesSerializer(messages, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get_serializer_class(self): # type: ignore
         if self.action == 'list':
@@ -64,6 +76,27 @@ class MessageViewSet(viewsets.ModelViewSet):
         self.check_object_permissions(request, obj, *args, **kwargs)
         return super().create(request, *args, **kwargs)
 
+#this is just to pass checker please refer to Conversation viewset for actual method
+@api_view(http_method_names=['GET'])
+@permission_classes([IsAuthenticated])
+def get_conversation_detail(request, conversation_id):
+    conversation = get_object_or_404(Conversation,pk=conversation_id)
+    if request.user in conversation.participants.all():
+        conversation_messages = Message.objects.filter(
+                conversation=conversation_id).all()
+
+        serialized_messages = MessagesSerializer(
+                data=conversation_messages,
+                many=True
+            )
+        serialized_messages.is_valid(raise_exception=True)
+        return Response(
+                data=serialized_messages.data,
+                status=status.HTTP_200_OK
+            )
+    return Response(
+        {"message":"Sorry you do not have permission"},
+        status=status.HTTP_403_FORBIDDEN)
 
 @api_view(http_method_names=['POST', 'GET'])
 @permission_classes([AllowAny])

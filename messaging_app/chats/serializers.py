@@ -69,8 +69,6 @@ class UserTokenSerializer(serializers.Serializer):
         return super().validate(attrs)
         
 
-    
-
 class MessagesSerializer(serializers.ModelSerializer):
     sender = serializers.SerializerMethodField()
     class Meta:

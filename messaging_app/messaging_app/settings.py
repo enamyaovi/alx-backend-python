@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 import environ
+from datetime import timedelta
 
 env = environ.Env(
     DEBUG=(bool, False)
@@ -39,6 +40,9 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'django_filters',
+    'oauth2_provider',
+    'social_django',
+    'drf_social_oauth2',
 
 ]
 
@@ -65,10 +69,13 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'messaging_app.wsgi.application'
 
@@ -130,12 +137,15 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated'
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 5,
+    'PAGE_SIZE': 20,
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication', 
+        'drf_social_oauth2.authentication.SocialAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'chats.auth.CustomAuthentication'
     ),
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
@@ -143,9 +153,25 @@ REST_FRAMEWORK = {
     # 'EXCEPTION_HANDLER': 'utils.exceptionhandler.customexceptionhandler',
 }
 
+AUTHENTICATION_BACKENDS = (
+   'drf_social_oauth2.backends.DjangoOAuth2',
+   'django.contrib.auth.backends.ModelBackend',
+)
+
 SIMPLE_JWT = {
 
-    "USER_ID_FIELD":"user_id"
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "USER_ID_FIELD":"user_id",
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=360),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": False,
+
+    "TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainPairSerializer",
+    "TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSerializer",
+    "TOKEN_VERIFY_SERIALIZER": "rest_framework_simplejwt.serializers.TokenVerifySerializer",
 
 }
 
