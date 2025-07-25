@@ -98,8 +98,12 @@ class RolepermissionMiddleware:
         for protected in self.protected_paths:
             if path.startswith(protected):
                 user = request.user
-                if not user.is_superuser and not user.is_staff:
-                    raise PermissionDenied("Access Denied")
+                # if not user.is_superuser and not user.is_staff:
+                if not hasattr(user, 'role') or user.role not in ['admin', 'moderator']:
+                    # raise PermissionDenied("Access Denied")
+                    return JsonResponse(
+                        {"message":"Not Allowed"}, status=403
+                    )
                 break
         return self.get_response(request)
     
