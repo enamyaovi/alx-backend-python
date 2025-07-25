@@ -1,6 +1,6 @@
 
 #dummy ignore this
-
+django_project = __import__('Django-Middleware-0x03')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
