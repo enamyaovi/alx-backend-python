@@ -3,7 +3,7 @@ import logging, time
 import os
 from typing import Any
 from datetime import datetime, timedelta
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.core.exceptions import PermissionDenied
 
 os.makedirs("logs", exist_ok=True)
@@ -83,3 +83,23 @@ class OffensiveLanguageMiddleware:
             self.request_log[ip].append(now)
 
         return self.get_response(request)
+    
+class RolepermissionMiddleware:
+    def __init__(self, get_response) -> None:
+        self.get_response = get_response
+        self.protected_paths = [
+            '/admin/',
+            '/api/restricted/'
+        ]
+
+    def __call__(self, request, *args: Any, **kwds: Any) -> Any:
+        path = request.path
+
+        for protected in self.protected_paths:
+            if path.startswith(protected):
+                user = request.user
+                if not user.is_superuser and not user.is_staff:
+                    raise PermissionDenied("Access Denied")
+                break
+        return self.get_response(request)
+    
