@@ -42,11 +42,11 @@ class RestrictAccessByTimeMiddleware:
         after = time(hour=21, minute=00) #type: ignore
 
         if current_time < before or current_time > after:
-            raise PermissionDenied
-            # return JsonResponse(
-                # {"message": "Sorry, chatroom API is closed."},
-                # status=403
-            # )
+            # raise PermissionDenied
+            return JsonResponse(
+                {"message": "Sorry, chatroom API is closed."},
+                status=403
+            )
         return self.get_response(request)
 
 class OffensiveLanguageMiddleware:
