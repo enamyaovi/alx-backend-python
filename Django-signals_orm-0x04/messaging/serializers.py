@@ -71,9 +71,18 @@ class UserTokenSerializer(serializers.Serializer):
 
 
 class MessageHistorySerializer(serializers.ModelSerializer):
+    edited_at = serializers.SerializerMethodField()
+    edited_by = serializers.SerializerMethodField()
     class Meta:
         model = MessageHistory
-        fields = ['old_content']
+        fields = ['old_content', 'edited_at','edited_by']
+
+    def get_edited_at(self, obj):
+        return obj.message.edited_at
+    
+    def get_edited_by(self, obj):
+        message_sender = obj.message.sender.email
+        return message_sender
 
 class UnreadMessageSerializer(serializers.ModelSerializer):
     sender = serializers.SerializerMethodField()
@@ -83,7 +92,7 @@ class UnreadMessageSerializer(serializers.ModelSerializer):
             'parent_message',
             'sender',
             'content',
-            'time_stamp',
+            'timestamp',
         ]
 
     def get_sender(self, obj):
@@ -91,35 +100,35 @@ class UnreadMessageSerializer(serializers.ModelSerializer):
 
 class MessageReplySerializer(serializers.ModelSerializer):
     sender = serializers.SerializerMethodField()
-    # reciever = serializers.SerializerMethodField()
+    # receiver = serializers.SerializerMethodField()
     class Meta:
         model = Message
         fields = [
             # 'parent_message',
             'sender',
             'content',
-            # 'reciever'
+            # 'receiver'
         ]
 
     def get_sender(self, obj):
         return obj.sender.email
     
-    def get_reciever(self, obj):
-        return obj.reciever.email
+    def get_receiver(self, obj):
+        return obj.receiver.email
 
 
 class MessagesSerializer(serializers.ModelSerializer):
     # sender = serializers.SerializerMethodField()
     old_message = serializers.SerializerMethodField()
     replies = serializers.SerializerMethodField()
-    reciever = serializers.SerializerMethodField()
+    receiver = serializers.SerializerMethodField()
     class Meta:
         model = Message
         fields = [
             # 'sender',
-            'reciever',
+            'receiver',
             'content',
-            'time_stamp',
+            'timestamp',
             # 'conversation',
             'old_message',
             'replies'
@@ -128,8 +137,8 @@ class MessagesSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         return super().validate(attrs)
 
-    def get_reciever(self, obj):
-        return obj.reciever.email
+    def get_receiver(self, obj):
+        return obj.receiver.email
     
     def get_sender(self, obj):
         return obj.sender.email

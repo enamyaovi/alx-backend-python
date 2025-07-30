@@ -73,8 +73,8 @@ class MessageRepliesManager(models.Manager):
         return super().get_queryset().select_related("replies")
     
 class UnreadMessagesManager(models.Manager):
-    def for_user(self, user) -> models.QuerySet:
-        return super().get_queryset().filter(reciever=user, read=False)
+    def unread_for_user(self, user) -> models.QuerySet:
+        return super().get_queryset().filter(receiver=user, read=False)
 
 class Message(models.Model):
 
@@ -96,11 +96,11 @@ class Message(models.Model):
         null=False
     )
 
-    time_stamp = models.DateTimeField(
+    timestamp = models.DateTimeField(
         auto_now_add=True
     )
 
-    reciever = models.ForeignKey(
+    receiver = models.ForeignKey(
         to=User,
         on_delete=models.DO_NOTHING,
         related_name='recieved_messages'
@@ -108,6 +108,18 @@ class Message(models.Model):
 
     edited = models.BooleanField(
         default= False
+    )
+
+    edited_at = models.DateTimeField(
+        blank=True,
+        null=True
+    )
+
+    edited_by = models.OneToOneField(
+        to=User,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
     )
 
     read = models.BooleanField(
@@ -123,7 +135,7 @@ class Message(models.Model):
 
     objects = models.Manager()
     reply_objects = MessageRepliesManager()
-    unread_messages = UnreadMessagesManager()
+    unread = UnreadMessagesManager()
 
     def __str__(self) -> str:
         return (
@@ -131,7 +143,7 @@ class Message(models.Model):
             )
     
     class Meta:
-        ordering = ['time_stamp']
+        ordering = ['timestamp']
 
 class MessageHistory(models.Model):
 

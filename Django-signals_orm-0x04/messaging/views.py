@@ -46,9 +46,9 @@ class UserViewSet(viewsets.ModelViewSet):
         detail=False, methods=['get'], url_name='unread',
         permission_classes=[IsAuthenticated, IsOwner])
     def unread_messages(self, request, pk=None):
-        messages = Message.unread_messages.for_user(
+        messages = Message.unread.unread_for_user(
             request.user).only(
-                'sender', 'content', 'time_stamp', 'read', 'parent_message')
+                'sender', 'content', 'timestamp', 'read', 'parent_message')
         
         if not messages.exists():
             return Response(
@@ -95,7 +95,7 @@ class MessageViewSet(viewsets.ModelViewSet):
         if self.action in ['update','delete']:
             return Message.objects.all().filter(sender=self.request.user)
         elif self.action == 'list':
-            return Message.objects.all().filter(sender=self.request.user).select_related('replies')
+            return Message.objects.all().filter(sender=self.request.user).prefetch_related('replies')
         return super().get_queryset()
     
     def create(self, request, *args, **kwargs):
@@ -129,6 +129,16 @@ def get_conversation_detail(request, conversation_id):
         {"message":"Sorry you do not have permission"},
         status=status.HTTP_403_FORBIDDEN)
 
+@api_view(http_method_names=['GET'])
+@permission_classes([IsAuthenticated])
+def get_messages(request, receiver_name=None):
+    messages = Message.objects.filter(
+        sender=request.user,
+        receiver__username=receiver_name
+    ).all().select_related('receiver')
+    serialized = MessagesSerializer(instance=messages, many=True)
+    return Response(serialized.data, status=status.HTTP_200_OK)
+
 @api_view(http_method_names=['POST', 'GET'])
 @permission_classes([AllowAny])
 def get_token(request):
@@ -159,7 +169,8 @@ def delete_user(request):
     if request.method == 'DELETE':
         if request.user.is_authenticated:
             User = get_user_model()
-            get_object_or_404(User, pk=request.user.user_id).delete()
+            user = get_object_or_404(User, pk=request.user.user_id)
+            user.delete()
             log_out()
         return Response(
             {"message":"User deleted"},

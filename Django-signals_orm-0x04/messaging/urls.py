@@ -2,7 +2,7 @@ from rest_framework import routers
 from django.urls import path, include
 from messaging.views import (
     MessageViewSet, ConversationViewSet, get_token,
-    UserViewSet, log_out, delete_user)
+    UserViewSet, log_out, delete_user, get_messages)
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -22,5 +22,6 @@ urlpatterns = [
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('logout/', log_out, name='log_out'),
-    path('user/delete_user/', delete_user, name='delete_user')
+    path('user/delete_user/', delete_user, name='delete_user'),
+    path('get_messages/<str:receiver_name>/', get_messages, name='get-messages')
 ]

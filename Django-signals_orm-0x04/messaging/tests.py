@@ -30,12 +30,12 @@ class TestMessageModel(TestCase):
         self.message1 = Message.objects.create(
             sender = self.user1,
             content= 'Hello Girly!',
-            reciever= self.user2
+            receiver= self.user2
         )
         self.message2 = Message.objects.create(
             sender = self.user2,
             content= 'Hi TestBoi',
-            reciever = self.user1
+            receiver = self.user1
         )
         
     def test_message_creation(self):
@@ -49,7 +49,7 @@ class TestMessageModel(TestCase):
 
         self.assertEqual(
             list(self.user2.recieved_messages.all()), #type: ignore
-            list(Message.objects.filter(reciever=self.user2).all())
+            list(Message.objects.filter(receiver=self.user2).all())
         )
 
     def test_notifications_exist(self):
