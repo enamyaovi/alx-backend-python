@@ -1,5 +1,5 @@
 from django.test import TestCase
-from messaging.models import Message, Notifications
+from messaging.models import Message, Notification
 from django.contrib.auth import get_user_model
 # Create your tests here.
 
@@ -53,7 +53,7 @@ class TestMessageModel(TestCase):
         )
 
     def test_notifications_exist(self):
-        user2_notify = Notifications.objects.filter(user=self.user2).get()
+        user2_notify = Notification.objects.filter(user=self.user2).get()
         self.assertIsNotNone(user2_notify)
 
         self.assertEqual(

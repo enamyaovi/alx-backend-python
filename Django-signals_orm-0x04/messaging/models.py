@@ -157,7 +157,7 @@ class MessageHistory(models.Model):
 
 
 
-class Notifications(models.Model):
+class Notification(models.Model):
 
     notification_id = models.UUIDField(
         primary_key= True,

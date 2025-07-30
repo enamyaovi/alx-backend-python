@@ -1,5 +1,5 @@
 from django.db.models.signals import post_save, post_delete, pre_save
-from messaging.models import Message, Notifications, MessageHistory
+from messaging.models import Message, Notification, MessageHistory
 from django.contrib.auth import get_user_model
 from django.dispatch import receiver
 from datetime import datetime
@@ -7,7 +7,7 @@ from datetime import datetime
 @receiver(post_save, sender=Message)
 def notification_creator(sender, instance, created, **kwargs):
     if created:
-        Notifications.objects.get_or_create(
+        Notification.objects.get_or_create(
             user=instance.receiver,
             message = instance
         )
@@ -30,4 +30,4 @@ def log_old_messages(sender, instance, **kwargs):
 def on_user_deleted(sender, instance, **kwargs):
     MessageHistory.objects.filter(message__sender=instance).delete()
     Message.objects.filter(sender=instance).delete()
-    Notifications.objects.filter(user=instance).delete()
+    Notification.objects.filter(user=instance).delete()
