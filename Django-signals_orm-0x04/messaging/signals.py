@@ -7,7 +7,7 @@ from datetime import datetime
 @receiver(post_save, sender=Message)
 def notification_creator(sender, instance, created, **kwargs):
     if created:
-        Notification.objects.get_or_create(
+        Notification.objects.create(
             user=instance.receiver,
             message = instance
         )
