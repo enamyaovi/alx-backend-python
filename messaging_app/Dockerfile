@@ -6,8 +6,9 @@
 
 # Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
 
-ARG PYTHON_VERSION=3.10
-FROM python:${PYTHON_VERSION}-slim as base
+# ARG PYTHON_VERSION=3.10
+# FROM python:${PYTHON_VERSION}-slim as base
+FROM python:3.10
 
 # Prevents Python from writing pyc files.
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -19,9 +20,9 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # Install pkg-config and any other necessary build dependencies
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends pkg-config && \
-    rm -rf /var/lib/apt/lists/*
+# RUN apt-get update && \
+    # apt-get install -y --no-install-recommends pkg-config && \
+    # rm -rf /var/lib/apt/lists/*
 
 # Create a non-privileged user that the app will run under.
 # See https://docs.docker.com/go/dockerfile-user-best-practices/
