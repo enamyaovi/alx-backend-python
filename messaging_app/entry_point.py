@@ -12,9 +12,10 @@ def main():
     # (Optional) Run migrations automatically
     subprocess.run(["python", "manage.py", "migrate"], check=True)
 
+    # subprocess.run(["python", "manage.py", "collectstatic"])
+
     # Start the development server
-    subprocess.run(["python", "manage.py", "runserver", "0.0.0.0:8000"], check=True)
+    subprocess.run(["python", "manage.py", "runserver", "0.0.0.0:8000"])
 
 if __name__ == "__main__":
     sys.exit(main())
-
