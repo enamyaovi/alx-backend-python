@@ -17,7 +17,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # the application crashes without emitting any logs due to buffering.
 ENV PYTHONUNBUFFERED=1
 
-WORKDIR /app
+WORKDIR /messaging_app
 
 # Install pkg-config and any other necessary build dependencies
 # RUN apt-get update && \

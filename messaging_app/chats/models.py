@@ -39,7 +39,8 @@ class User(AbstractUser):
         verbose_name= 'Role of the user',
         choices= UserRole.choices,
         null= False,
-        default=UserRole.GUEST
+        default=UserRole.GUEST,
+        max_length=3
     )
     created_at = models.DateTimeField(
         auto_now_add=True
