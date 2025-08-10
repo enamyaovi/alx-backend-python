@@ -17,7 +17,7 @@ services:
       DEBUG: True
       CORS_ALLOWED_ORIGIN: ${CORS_ALLOWED_ORIGIN}
       SECRET_KEY: /run/secrets/secret_key
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python3 manage.py runserver 0.0.0.0:8000
   db:
     image: mysql:latest
     volumes:
@@ -30,7 +30,7 @@ services:
       # MYSQL_PASSWORD_FILE: /run/secrets/db_password
       # MYSQL_DATABASE: chatty
       # MYSQL_USER: admin
-      MYSQL_DATABASE: ${MYSQL_DB}
+      MYSQL_DB: ${MYSQL_DB}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
