@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-messaging-green
+  labels:
+    app: messaging-app
+    version: green
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: messaging-app
+      version: green
+  template:
+    metadata:
+      labels:
+        app: messaging-app
+        version: green
+    spec:
+      containers:
+        - name: django-messaging-app
+          image: enamyaovi498/alx_projects/django_messaging_app:v2.0
+          ports:
+            - containerPort: 8000
+          envFrom:
+          - configMapRef:
+            name: django-config
+          - secretRef:
+            name: django-secrets
