@@ -87,9 +87,15 @@ WSGI_APPLICATION = 'messaging_app.wsgi.application'
     # 'default':env.db_url('DB_PROD')
 # }
 
-password = env('DB_PASSWORD')
-DATABASE = {
-    'default': f'mysql://admin:{password}@db:3306/chatty'
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': env('DATABASE_NAME'),
+        'USER': env('DATABASE_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DATABASE_PROD'),
+        'PORT': 3306,
+    }
 }
 
 # Password validation
@@ -126,7 +132,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"), 
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
