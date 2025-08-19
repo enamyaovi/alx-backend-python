@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Check for minikube
+if ! command -v minikube &> /dev/null; then
+    echo "minikube not found, install minikube first"
+    exit 1
+fi
+
+# Check for kubectl
+if ! command -v kubectl &> /dev/null; then
+    echo "kubectl not found, install kubectl first"
+    exit 1
+fi
+
+# Start cluster and enable metrics
+minikube start
+minikube addons enable metrics-server
+
+# Verify cluster and pods
+kubectl cluster-info
+kubectl get pods -A
