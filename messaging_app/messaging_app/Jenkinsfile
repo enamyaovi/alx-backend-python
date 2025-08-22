@@ -12,7 +12,7 @@ pipeline {
             steps {
                 echo 'Installing dependencies...'
                 dir('messaging_app') {
-                    sh 'pip install -r messaging_app/requirements.txt'
+                    sh 'pip3 install -r messaging_app/requirements.txt'
                 }
             }
         }
