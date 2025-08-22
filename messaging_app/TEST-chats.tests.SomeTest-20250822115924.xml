@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="chats.tests.SomeTest-20250822115924" tests="2" file="chats/tests.py" time="0.005" timestamp="2025-08-22T11:59:24" failures="1" errors="0" skipped="0">
+	<testcase classname="chats.tests.SomeTest" name="test_should_pass" time="0.000" timestamp="2025-08-22T11:59:24" file="chats/tests.py" line="9"/>
+	<testcase classname="chats.tests.SomeTest" name="test_should_fail" time="0.005" timestamp="2025-08-22T11:59:24" file="chats/tests.py" line="6">
+		<failure type="AssertionError" message="True is not false"><![CDATA[Traceback (most recent call last):
+  File "/home/enamyaovi/Alx_Pro_Dev/alx-backend-python/messaging_app/chats/tests.py", line 7, in test_should_fail
+    self.assertFalse(True)
+AssertionError: True is not false
+]]></failure>
+	</testcase>
+</testsuite>
